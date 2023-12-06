@@ -11,4 +11,5 @@ class User < ActiveRecord::Base
   def set_uid
     self[:uid] = self[:email] if self[:uid].blank? && self[:email].present?
   end
+  has_many :posts
 end
