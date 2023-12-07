@@ -5,6 +5,12 @@ class UsersController < ApplicationController
  def show_user_posts
     render json: @user
  end
+ 
+ def current_user_posts
+   @posts = current_user.posts.all
+   
+   render json: @posts
+ end
 
  private
  def set_user

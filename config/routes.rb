@@ -8,4 +8,6 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "articles#index"
   get '/user/:id', to: 'users#show_user_posts'
+
+  get '/feed', to: 'users#current_user_posts'
 end
