@@ -52,3 +52,5 @@ end
 
 gem "devise_token_auth", "~> 1.2"
 
+
+gem "rack-cors", "~> 2.0"
