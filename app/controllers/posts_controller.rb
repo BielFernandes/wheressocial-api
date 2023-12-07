@@ -3,8 +3,9 @@ class PostsController < ApplicationController
   before_action :set_post, only: %i[ show update destroy ]
 
   # GET /posts
+
   def index
-    @posts = current_user.posts.all
+    @posts = Post.all
     
     render json: @posts
   end
@@ -36,7 +37,12 @@ class PostsController < ApplicationController
 
   # DELETE /posts/1
   def destroy
-    @post.destroy
+    if @post.user.id == current_user.id
+      @post.destroy
+      render json: { id: params[:id], deleted: 'ok' }
+    else
+      render json: { errors: "You don't deleting other person posts." }, status: :unauthorized
+    end
   end
 
   private
