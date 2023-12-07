@@ -1,6 +1,6 @@
 class PostsController < ApplicationController
-  before_action :set_post, only: %i[ show update destroy ]
   before_action :authenticate_user!
+  before_action :set_post, only: %i[ show update destroy ]
 
   # GET /posts
   def index
@@ -43,6 +43,8 @@ class PostsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_post
       @post = Post.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      render404
     end
 
     # Only allow a list of trusted parameters through.
