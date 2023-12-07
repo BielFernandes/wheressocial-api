@@ -2,20 +2,16 @@ class PostsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_post, only: %i[ show update destroy ]
 
-  # GET /posts
-
   def index
     @posts = Post.all
     
     render json: @posts
   end
 
-  # GET /posts/1
   def show
     render json: @post
   end
 
-  # POST /posts
   def create
     @post = current_user.posts.build(post_params)
 
@@ -26,16 +22,19 @@ class PostsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /posts/1
   def update
-    if @post.update(post_params)
-      render json: @post
+    if @post.user.id == current_user.id
+      if @post.update(post_params)
+        render json: @post
+      else
+        render json: @post.errors, status: :unprocessable_entity
+      end
     else
-      render json: @post.errors, status: :unprocessable_entity
+      render json: { errors: "You don't updanting other person posts." }, status: :unauthorized
     end
+
   end
 
-  # DELETE /posts/1
   def destroy
     if @post.user.id == current_user.id
       @post.destroy
@@ -46,14 +45,12 @@ class PostsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_post
       @post = Post.find(params[:id])
     rescue ActiveRecord::RecordNotFound
       render404
     end
 
-    # Only allow a list of trusted parameters through.
     def post_params
       params.require(:post).permit(:content, :current_user)
     end
