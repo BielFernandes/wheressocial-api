@@ -18,7 +18,12 @@ class LikesController < ApplicationController
   end
 
   def destroy
-    @like.destroy
+    if @like.user_id == current_user.id
+      @like.destroy
+      render json: { id: params[:id], deleted: 'ok' }
+    else
+      render json: { errors: "You don't deleting other person posts." }, status: :unauthorized
+    end
   end
 
   private
