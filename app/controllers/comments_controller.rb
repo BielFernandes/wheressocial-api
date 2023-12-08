@@ -1,4 +1,5 @@
 class CommentsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_comment, only: %i[ show update destroy ]
   before_action :set_post_to_comment, only: [:create]
 
@@ -55,6 +56,8 @@ class CommentsController < ApplicationController
 
     def set_post_to_comment
       @post = Post.find(params[:post_id])
+    rescue ActiveRecord::RecordNotFound
+      render404
     end
 
     # Only allow a list of trusted parameters through.
