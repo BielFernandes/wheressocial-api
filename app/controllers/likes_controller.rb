@@ -1,51 +1,36 @@
 class LikesController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_like, only: %i[ show update destroy ]
+  before_action :set_post_to_like, only: [:create]
 
-  # GET /likes
-  def index
-    @likes = Like.all
-
-    render json: @likes
-  end
-
-  # GET /likes/1
-  def show
-    render json: @like
-  end
-
-  # POST /likes
   def create
-    @like = Like.new(like_params)
-
-    if @like.save
-      render json: @like, status: :created, location: @like
+    find_like = Like.find_by(user_id: current_user.id, post_id: @post.id)
+    unless find_like
+      @like = Like.new(user_id: current_user.id, post_id: @post.id)
+      if @like.save
+        render json: @like, status: :created
+      else
+        render json: { errors: @like.errors }, status: :unprocessable_entity
+      end
     else
-      render json: @like.errors, status: :unprocessable_entity
+      render json: { errors: "Have you already liked." }, status: :unauthorized
     end
   end
 
-  # PATCH/PUT /likes/1
-  def update
-    if @like.update(like_params)
-      render json: @like
-    else
-      render json: @like.errors, status: :unprocessable_entity
-    end
-  end
-
-  # DELETE /likes/1
   def destroy
     @like.destroy
   end
 
   private
+
+    def set_post_to_like
+      @post = Post.find(params[:post_id])
+    rescue ActiveRecord::RecordNotFound
+      render404
+    end
     # Use callbacks to share common setup or constraints between actions.
     def set_like
       @like = Like.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
-    def like_params
-      params.fetch(:like, {})
-    end
 end
