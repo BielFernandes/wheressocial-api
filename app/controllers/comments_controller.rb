@@ -10,9 +10,9 @@ class CommentsController < ApplicationController
   # end
 
   # GET /comments/1
-  # def show
-  #   render json: @comment
-  # end
+  def show
+    render json: @comment
+  end
 
   # POST /comments
   def create
@@ -39,7 +39,12 @@ class CommentsController < ApplicationController
 
   # DELETE /comments/1
   def destroy
-    @comment.destroy
+    if @comment.user_id == current_user.id
+      @comment.destroy
+      render json: { id: params[:id], deleted: 'ok' }
+    else
+      render json: { errors: "You don't updanting other person posts." }, status: :unauthorized
+    end
   end
 
   private
