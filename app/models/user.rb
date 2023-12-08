@@ -13,4 +13,5 @@ class User < ActiveRecord::Base
     self[:uid] = self[:email] if self[:uid].blank? && self[:email].present?
   end
   has_many :posts
+  has_many :likes
 end
