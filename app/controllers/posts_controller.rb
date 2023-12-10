@@ -4,19 +4,11 @@ class PostsController < ApplicationController
 
   def index
     @posts = Post.all
-    @posts.map do |item|
-      item.likes.map do | likes_post |
-        if likes_post.user_id == current_user.id
-          item.liked = true
-        end
-      end
-    end
-    
-    render json: @posts
+    render json: @posts, each_serializer: PostSerializer, current_user: current_user
   end
 
   def show
-    render json: @post
+    render json: @post, each_serializer: PostSerializer, current_user: current_user
   end
 
   def create
