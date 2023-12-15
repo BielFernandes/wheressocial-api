@@ -7,4 +7,10 @@ class Post < ApplicationRecord
         likes.exists?(user_id: user.id)
     end
 
+    validates :content, presence: true
+    validates :user_id, presence: true
+    validates_associated :comments, :likes
+    validates :content, length: {minimum: 1}
+    
+
 end
