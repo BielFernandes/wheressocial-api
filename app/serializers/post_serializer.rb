@@ -4,7 +4,7 @@ class PostSerializer < ActiveModel::Serializer
   belongs_to :user
   has_many :comments
   has_many :likes
-  has_many :shares
+  # has_many :shares
 
   attribute :liked_by_current_user, if: -> { current_user.present? }
 

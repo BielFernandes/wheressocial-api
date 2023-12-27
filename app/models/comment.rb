@@ -1,12 +1,13 @@
 class Comment < ApplicationRecord
+    belongs_to :commentable, polymorphic: true
+    # belongs_to :post
     belongs_to :user
-    belongs_to :post
 
-    validates :content, presence: true
+    # validates :content, presence: true
 
-    validates :user_id, presence: true
+    # validates :user_id, presence: true
 
-    validates :post_id, presence: true
+    # validates :post_id, presence: true
     
-    validates :content, length: {minimum: 1}
+    # validates :content, length: {minimum: 1}
 end

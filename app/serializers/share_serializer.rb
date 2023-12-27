@@ -1,6 +1,6 @@
-class ShareSerializer < ActiveModel::Serializer
-  attributes :id
+# class ShareSerializer < ActiveModel::Serializer
+#   attributes :id
   
-  belongs_to :post
-  belongs_to :user
-end
+#   belongs_to :post
+#   belongs_to :user
+# end
