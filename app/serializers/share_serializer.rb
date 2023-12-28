@@ -1,18 +1,25 @@
 class ShareSerializer < ActiveModel::Serializer
-  attributes :id, :content, :author
-  
-  belongs_to :author, key: :user
-  belongs_to :shared_post, key: :post
+  attributes :id, :shared_author, :shared_content ,:post
 
-  def author
-    {
-      id: object.user.id,
-      name: object.user.name,
-    }
+  def shared_author
+    object.user.name
   end
 
-  def shared_post
-    object.post
+  def shared_content
+    object.content
+  end
+
+  def post_content
+    object.content
+  end
+
+  def post
+    {
+      id: object.post.id,
+      author: object.post.user.name,
+      nickname_author: object.post.user.nickname,
+      post_content: object.post.content
+    }
   end
 
 end

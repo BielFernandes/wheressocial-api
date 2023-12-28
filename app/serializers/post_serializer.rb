@@ -1,7 +1,7 @@
 class PostSerializer < ActiveModel::Serializer
   attributes :id, :post_author ,:post_content, :liked
 
-  belongs_to :user
+  # belongs_to :user
   # has_many :comments
   # has_many :likes
   # has_many :shares
@@ -10,6 +10,7 @@ class PostSerializer < ActiveModel::Serializer
     {
       id: object.user.id,
       name: object.user.name,
+      nickname: object.user.nickname,
     }
   end
 

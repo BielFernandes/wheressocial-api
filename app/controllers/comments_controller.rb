@@ -1,6 +1,7 @@
 class CommentsController < ApplicationController
-  before_action :authenticate_user!
   before_action :set_commentable
+  before_action :authenticate_user!
+  before_action :require_owner, only: [:destroy]
   # before_action :set_comment, only: %i[ show update destroy ]
 
   def index
@@ -22,8 +23,7 @@ class CommentsController < ApplicationController
   end
 
   def destroy
-    if @comment.user_id == current_user.id
-      @comment.destroy
+    if @comment.destroy
       render json: { id: params[:id], deleted: 'ok' }
     else
       render json: { errors: "You don't updanting other person posts." }, status: :unauthorized
@@ -44,4 +44,11 @@ class CommentsController < ApplicationController
     def comment_params
       params.require(:comment).permit(:content)
     end
+
+    def require_owner
+      unless current_user == @commentable.user
+        render json: { error: "You are not authorized to perform this action." }, status: :unauthorized
+      end
+    end
+
 end
