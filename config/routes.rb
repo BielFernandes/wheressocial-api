@@ -3,8 +3,14 @@ Rails.application.routes.draw do
   resources :posts do
     resources :comments
     resources :likes
-    resources :shares
-    end
+  end
+
+  resources :shares do
+    resources :comments
+    resources :likes
+  end
+
+  post '/shares/:post_id', to: 'shares#create'
     # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")

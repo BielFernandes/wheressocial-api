@@ -1,14 +1,25 @@
 class PostSerializer < ActiveModel::Serializer
-  attributes :id, :content, :liked_by_current_user
+  attributes :id, :post_author ,:post_content, :liked
 
   belongs_to :user
-  has_many :comments
-  has_many :likes
+  # has_many :comments
+  # has_many :likes
   # has_many :shares
 
-  attribute :liked_by_current_user, if: -> { current_user.present? }
+  def post_author
+    {
+      id: object.user.id,
+      name: object.user.name,
+    }
+  end
 
-  def liked_by_current_user
+  def post_content
+    object.content
+  end
+
+  attribute :liked, if: -> { current_user.present? }
+
+  def liked
     object.liked_by_user?(current_user)
   end
 end

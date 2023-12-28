@@ -1,30 +1,31 @@
 class SharesController < ApplicationController
+  before_action :authenticate_user!
+  before_action :share_params, only: %i[ create update ]
   before_action :set_share, only: %i[ show update destroy ]
+  before_action :set_post_to_share, only: [:create]
+  before_action :require_owner, only: [:edit, :update, :destroy]
 
-  # GET /shares
   def index
     @shares = Share.all
 
     render json: @shares
   end
 
-  # GET /shares/1
   def show
     render json: @share
   end
 
-  # POST /shares
   def create
-    @share = Share.new(share_params)
+    @share = Share.new(user_id: current_user.id, post_id: @post.id, content: share_params[:content])
 
     if @share.save
-      render json: @share, status: :created, location: @share
+      render json: @share, status: :created
     else
       render json: @share.errors, status: :unprocessable_entity
     end
+
   end
 
-  # PATCH/PUT /shares/1
   def update
     if @share.update(share_params)
       render json: @share
@@ -33,19 +34,31 @@ class SharesController < ApplicationController
     end
   end
 
-  # DELETE /shares/1
   def destroy
     @share.destroy
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+    def set_post_to_share
+      @post = Post.find(params[:post_id])
+      rescue ActiveRecord::RecordNotFound
+        render404
+    end
+    
     def set_share
       @share = Share.find(params[:id])
+      rescue ActiveRecord::RecordNotFound
+        render404
     end
 
-    # Only allow a list of trusted parameters through.
     def share_params
-      params.require(:share).permit(:post_id, :user_id)
+      params.require(:share).permit(:content)
     end
+
+    def require_owner
+      unless current_user == @share.user
+        render json: { error: "You are not authorized to perform this action." }, status: :unauthorized
+      end
+    end
+
 end

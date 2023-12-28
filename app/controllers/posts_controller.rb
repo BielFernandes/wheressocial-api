@@ -1,6 +1,7 @@
 class PostsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_post, only: %i[ show update destroy ]
+  before_action :require_owner, only: [:edit, :update, :destroy]
 
   def index
     @posts = Post.all
@@ -53,4 +54,11 @@ class PostsController < ApplicationController
     def post_params
       params.require(:post).permit(:content)
     end
+
+    def require_owner
+      unless current_user == @share.user
+        render json: { error: "You are not authorized to perform this action." }, status: :unauthorized
+      end
+    end
+
 end
