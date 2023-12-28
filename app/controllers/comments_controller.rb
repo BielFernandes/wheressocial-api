@@ -1,6 +1,7 @@
 class CommentsController < ApplicationController
-  before_action :set_commentable
   before_action :authenticate_user!
+  before_action :set_comment, only: %i[ show update destroy ]
+  before_action :set_commentable
   before_action :require_owner, only: [:destroy]
   # before_action :set_comment, only: %i[ show update destroy ]
 
@@ -9,7 +10,7 @@ class CommentsController < ApplicationController
   end
 
   def show
-    render json: @commentable
+    render json: @comment
   end
 
   def create
@@ -39,6 +40,12 @@ class CommentsController < ApplicationController
         puts 'caiu ali'
         @commentable = Share.find(params[:share_id])
       end
+    end
+
+    def set_comment
+      @comment = Comment.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      render404
     end
 
     def comment_params

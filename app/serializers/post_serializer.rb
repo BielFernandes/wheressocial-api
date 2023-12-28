@@ -1,17 +1,17 @@
 class PostSerializer < ActiveModel::Serializer
-  attributes :id, :post_author ,:post_content, :liked
+  attributes :id, :author ,:author_nickname, :post_content, :created_at, :liked, :comments
 
   # belongs_to :user
-  # has_many :comments
+  has_many :comments
   # has_many :likes
   # has_many :shares
 
-  def post_author
-    {
-      id: object.user.id,
-      name: object.user.name,
-      nickname: object.user.nickname,
-    }
+  def author
+    object.user.name
+  end
+
+  def author_nickname
+    object.user.nickname
   end
 
   def post_content
