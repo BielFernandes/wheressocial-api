@@ -1,10 +1,14 @@
 class ShareSerializer < ActiveModel::Serializer
-  attributes :id, :shared_author, :shared_content, :created_at, :post, :comments
+  attributes :id, :author, :author_nickname, :shared_content, :created_at, :post, :comments
 
   has_many :comments
 
-  def shared_author
+  def author
     object.user.name
+  end
+
+  def author_nickname
+    object.user.nickname
   end
 
   def shared_content

@@ -53,7 +53,7 @@ class CommentsController < ApplicationController
     end
 
     def require_owner
-      unless current_user == @commentable.user
+      unless current_user == @comment.user
         render json: { error: "You are not authorized to perform this action." }, status: :unauthorized
       end
     end
