@@ -4,10 +4,6 @@ class Post < ApplicationRecord
     has_many :likes, as: :likeable, dependent: :destroy
     has_many :shares, dependent: :destroy
 
-    def liked_by_user?(user)
-        likes.exists?(user_id: user.id)
-    end
-
     validates :content, presence: true
 
     validates :user_id, presence: true
