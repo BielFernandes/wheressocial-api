@@ -1,5 +1,5 @@
 class ShareSerializer < ActiveModel::Serializer
-  attributes :id, :author, :author_nickname, :shared_content, :liked, :created_at, :post,:comments
+  attributes :id, :author, :author_nickname, :shared_content, :liked, :created_at, :post, :comments_count, :likes_count,:comments
 
   has_many :comments
 
@@ -32,6 +32,14 @@ class ShareSerializer < ActiveModel::Serializer
 
   def liked
     object.liked_by_user?(current_user)
+  end
+
+  def comments_count
+    object.comments.count
+  end
+
+  def likes_count
+    object.likes.count
   end
 
 end
