@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :follows
+  # resources :follows
   mount_devise_token_auth_for 'User', at: 'auth'
   resources :posts do
     resources :comments
@@ -10,6 +10,10 @@ Rails.application.routes.draw do
     resources :comments
     resources :likes
   end
+
+  post '/follows/:user_id', to: 'follows#create'
+  get '/:user_id/followed', to: 'follows#user_followed'
+  get '/:user_id/followers', to: 'follows#user_followers'
 
   post '/shares/:post_id', to: 'shares#create'
     # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

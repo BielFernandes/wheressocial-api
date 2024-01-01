@@ -1,30 +1,38 @@
 class FollowsController < ApplicationController
-  before_action :set_follow, only: %i[ show update destroy ]
+  before_action :authenticate_user!
+  before_action :check_existent, only: [ :create ]
 
-  # GET /follows
-  def index
-    @follows = Follow.all
-
-    render json: @follows
+  def user_followed
+    @followed = Follow.where(followed_id: params[:user_id])
+    if @followed.exists?
+      render json: @followed
+    else
+      render404
+    end
   end
 
-  # GET /follows/1
-  def show
-    render json: @follow
+  def user_followers
+    @follower= Follow.where(follower_id: params[:user_id])
+    if @follower.exists?
+      render json: @follower
+    else
+      render404
+    end
   end
 
-  # POST /follows
   def create
-    @follow = Follow.new(follow_params)
-
+    if current_user.id == params[:user_id].to_i
+      return render json: {"message": "You cannot follow this action"}
+    end
+    
+    @follow = Follow.new(follower_id: current_user.id, followed_id: params[:user_id])
     if @follow.save
-      render json: @follow, status: :created, location: @follow
+      render json: @follow, status: :created
     else
       render json: @follow.errors, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /follows/1
   def update
     if @follow.update(follow_params)
       render json: @follow
@@ -33,19 +41,15 @@ class FollowsController < ApplicationController
     end
   end
 
-  # DELETE /follows/1
   def destroy
     @follow.destroy
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_follow
-      @follow = Follow.find(params[:id])
-    end
-
-    # Only allow a list of trusted parameters through.
-    def follow_params
-      params.require(:follow).permit(:follower_id, :followed_id)
+    def check_existent
+      get_follow = Follow.exists?(follower_id: current_user.id, followed_id: params[:user_id])
+      if get_follow
+        return render json: 'aaa'
+      end
     end
 end
