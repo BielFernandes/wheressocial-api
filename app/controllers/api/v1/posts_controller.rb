@@ -58,7 +58,7 @@ module Api
         end
 
         def require_owner
-          unless current_user == @share.user
+          unless current_user == @post.user
             render json: { error: "You are not authorized to perform this action." }, status: :unauthorized
           end
         end
