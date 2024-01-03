@@ -103,8 +103,7 @@ RSpec.describe Api::V1::PostsController, :type => :controller do
   it "should a status :unauthorized if the delete is from a user who is not the post author" do
     new_user = create(:user)
     post = create(:post, user_id: new_user.id)
-    params = { content: "Update my post" }
-    delete :destroy, params: { id: post.id, post: params }
+    delete :destroy, params: { id: post.id }
     post.reload
     expect(response).to have_http_status(:unauthorized)
   end

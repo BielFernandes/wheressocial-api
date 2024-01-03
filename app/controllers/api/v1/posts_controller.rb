@@ -2,6 +2,7 @@ module Api
   module V1
     class PostsController < ApplicationController
       before_action :authenticate_user!
+      before_action :post_params, only: %i[ create update ]
       before_action :set_post, only: %i[ show update destroy ]
       before_action :require_owner, only: [ :update, :destroy ]
 
