@@ -9,10 +9,9 @@ RSpec.describe Api::V1::PostsController, :type => :controller do
     request.headers.merge!(@auth_headers)
   end
 
-  let(:user)  { create(:user) }
-  let(:post) { create(:post, user_id: user.id) }
-
   context "GET #index" do
+    let(:user)  { create(:user) }
+    let(:post) { create(:post, user_id: user.id) }
     it "should success and render all posts json" do
       get :index
       expect(response).to have_http_status(200)
@@ -33,6 +32,8 @@ RSpec.describe Api::V1::PostsController, :type => :controller do
   end
 
   context "GET #show" do
+    let(:user)  { create(:user) }
+    let(:post) { create(:post, user_id: user.id) }
     it "should return the post details" do
       get :show, params: { id: post.id }
       expect(response). to have_http_status(:success)
@@ -49,6 +50,29 @@ RSpec.describe Api::V1::PostsController, :type => :controller do
       get :show, params: { id: 999 }
       json_response = JSON.parse(response.body)
       expect(response).to have_http_status(:not_found)
+    end
+  end
+
+  context "POST #create" do
+  let!(:params) {
+    {content: 'Some content'}
+  }
+    it "creates a new post" do
+      post :create, params: { post: params }, format: :json
+
+      expect(response).to have_http_status(:created)
+      expect(Post.last.content).to eq('Some content')
+    end
+
+    it "should return a specific status code for empty content upon creation." do
+      post :create, params: { post: { content: '' } }, format: :json
+      binding.pry
+      expect(response).to have_http_status(:created)
+    end
+
+    it "unprocessable with other params" do
+      post :create, params: { post: { other_param: 'Some content' } }, format: :json
+      expect(response).to have_http_status(:unprocessable_entity)
     end
   end
 end
