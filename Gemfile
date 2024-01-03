@@ -31,8 +31,17 @@ group :development do
   gem 'colorize'
 end
 
+group :test do
+
+gem "simplecov", "~> 0.22.0", :require => false
+
+gem "simplecov_json_formatter", "~> 0.1.4", :require => false
+
+end
+
 
 gem "devise_token_auth", "~> 1.2"
 
 
 gem "rack-cors", "~> 2.0"
+
