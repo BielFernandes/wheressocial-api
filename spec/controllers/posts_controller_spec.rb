@@ -66,7 +66,6 @@ RSpec.describe Api::V1::PostsController, :type => :controller do
 
     it "should return a specific status code for empty content upon creation." do
       post :create, params: { post: { content: '' } }, format: :json
-      binding.pry
       expect(response).to have_http_status(:created)
     end
 
@@ -75,4 +74,39 @@ RSpec.describe Api::V1::PostsController, :type => :controller do
       expect(response).to have_http_status(:unprocessable_entity)
     end
   end
+
+  context "PUT #update" do
+    it "should update post info" do
+      post = create(:post, user_id: @user.id)
+      params = { content: "Update my post" }
+      put :update, params: { id: post.id, post: params }
+      post.reload
+      expect(post.content == params[:content])
+    end
+
+    it "should a status :unauthorized if the update is from a user who is not the post author" do
+      new_user = create(:user)
+      post = create(:post, user_id: new_user.id)
+      params = { content: "Update my post" }
+      put :update, params: { id: post.id, post: params }
+      post.reload
+      expect(response).to have_http_status(:unauthorized)
+    end
+  end
+
+  context "DELETE #destroy" do
+  it "should dele post" do
+    post = create(:post, user_id: @user.id)
+    delete :destroy, params: { id: post.id }
+    expect(response).to have_http_status(:success)
+  end
+  it "should a status :unauthorized if the delete is from a user who is not the post author" do
+    new_user = create(:user)
+    post = create(:post, user_id: new_user.id)
+    params = { content: "Update my post" }
+    delete :destroy, params: { id: post.id, post: params }
+    post.reload
+    expect(response).to have_http_status(:unauthorized)
+  end
+end
 end
