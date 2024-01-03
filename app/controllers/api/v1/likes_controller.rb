@@ -5,7 +5,6 @@ module Api
       before_action :set_like, only: %i[ show update destroy ]
       before_action :set_likeable
       before_action :find_existent, only: [:create]
-      # before_action :set_post_to_like, only: [:create]
       before_action :require_owner, only: [:destroy]
 
       def index
@@ -38,7 +37,6 @@ module Api
       private
       
         def set_likeable
-
           if params[:post_id]
             @likeable = Post.find(params[:post_id])
           elsif params[:share_id]
