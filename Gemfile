@@ -23,6 +23,7 @@ group :development, :test do
   gem 'database_cleaner-active_record'
   gem 'rails-controller-testing'
   gem 'faker'
+  gem 'pry-rails'
 end
 
 group :development do
