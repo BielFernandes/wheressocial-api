@@ -2,6 +2,7 @@ module Api
   module V1
     class PostsController < ApplicationController
       before_action :authenticate_user!
+      before_action :post_params, only: %i[ create update ]
       before_action :set_post, only: %i[ show update destroy ]
       before_action :require_owner, only: [ :update, :destroy ]
 
@@ -58,7 +59,7 @@ module Api
         end
 
         def require_owner
-          unless current_user == @share.user
+          unless current_user == @post.user
             render json: { error: "You are not authorized to perform this action." }, status: :unauthorized
           end
         end

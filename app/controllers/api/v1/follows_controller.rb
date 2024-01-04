@@ -1,55 +1,48 @@
-class FollowsController < ApplicationController
-  before_action :authenticate_user!
-  before_action :check_existent, only: [ :create ]
+module Api
+  module V1
+    class FollowsController < ApplicationController
+      before_action :authenticate_user!
+      before_action :check_existent, only: [ :destroy ]
 
-  def user_followed
-    @followed = Follow.where(followed_id: params[:user_id])
-    if @followed.exists?
-      render json: @followed
-    else
-      render404
-    end
-  end
+      def user_followed
+        @followed = Follow.where(followed_id: params[:user_id])
+        render json: @followed
+      end
 
-  def user_followers
-    @follower= Follow.where(follower_id: params[:user_id])
-    if @follower.exists?
-      render json: @follower
-    else
-      render404
-    end
-  end
+      def user_followers
+        parameter = params[:user_id].to_i
+        @follower= Follow.where(follower_id: parameter)
+        render json: @follower
 
-  def create
-    if current_user.id == params[:user_id].to_i
-      return render json: {"message": "You cannot follow this action"}
-    end
-    
-    @follow = Follow.new(follower_id: current_user.id, followed_id: params[:user_id])
-    if @follow.save
-      render json: @follow, status: :created
-    else
-      render json: @follow.errors, status: :unprocessable_entity
-    end
-  end
+      end
 
-  def update
-    if @follow.update(follow_params)
-      render json: @follow
-    else
-      render json: @follow.errors, status: :unprocessable_entity
-    end
-  end
+      def create
+        if current_user.id == params[:user_id].to_i
+          return render json: {"message": "You cannot follow this action"}, status: :unprocessable_entity
+        end
 
-  def destroy
-    @follow.destroy
-  end
+        @follow = Follow.new(follower_id: current_user.id, followed_id: params[:user_id])
+        if @follow.save
+          render json: @follow, status: :created
+        else
+          render json: @follow.errors, status: :unprocessable_entity
+        end
+      end
 
-  private
-    def check_existent
-      get_follow = Follow.exists?(follower_id: current_user.id, followed_id: params[:user_id])
-      if get_follow
-        return render json: 'aaa'
+      def destroy
+        if @follow_register.destroy
+          render json: { "message": "deletaded" }, status: :no_content
+        end
+      end
+
+      private
+      def check_existent
+        check_follow = Follow.exists?(follower_id: current_user.id, followed_id: params[:user_id])
+        unless check_follow
+          return render json: {"message": "You cannot follow this action"}, status: :unprocessable_entity
+        end
+        @follow_register = Follow.find_by(follower_id: current_user.id, followed_id: params[:user_id])
       end
     end
+  end
 end

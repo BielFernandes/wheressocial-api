@@ -26,7 +26,6 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources :testes
       resources :posts do
         resources :comments
         resources :likes
@@ -40,6 +39,8 @@ Rails.application.routes.draw do
 
       get '/:user_id/followed', to: 'follows#user_followed'
       get '/:user_id/followers', to: 'follows#user_followers'
+
+      delete '/unfollow/:user_id', to: 'follows#destroy'
 
       post '/shares/:post_id', to: 'shares#create'
       get '/user/:id', to: 'users#show_user_posts'
