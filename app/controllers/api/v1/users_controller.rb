@@ -2,22 +2,16 @@ module Api
    module V1
       class UsersController < ApplicationController
       before_action :authenticate_user!
-      before_action :set_user, only: %i[ show_user_posts ]
-
-      def show_user_posts
-         render json: @user
-      end
+      before_action :set_user, only: %i[ find_param_user ]
       
-      def current_user_posts
-         @posts = current_user.posts.all
-         
-         render json: @posts
+      def find_param_user
+         render json: @get_user
       end
 
       private
       def set_user
-         @user = User.find(params[:id])
-      rescue ActiveRecord::RecordNotFound
+         @get_user = User.find(params[:user_id])
+         rescue ActiveRecord::RecordNotFound
          render404
       end
 

@@ -1,7 +1,9 @@
 class PostSerializer < ActiveModel::Serializer
-  attributes :id, :author ,:author_nickname, :post_content, :created_at, :liked, :comments_count, :likes_count, :comments
+  attributes :id, :author_id, :author ,:author_nickname, :post_content, :created_at, :liked, :shares_count ,:comments_count, :likes_count
 
-  has_many :comments
+  def author_id
+    object.user.id
+  end
 
   def author
     object.user.name
@@ -19,6 +21,10 @@ class PostSerializer < ActiveModel::Serializer
 
   def liked
     object.liked_by_user?(current_user)
+  end
+
+  def shares_count
+    object.shares.count
   end
 
   def comments_count

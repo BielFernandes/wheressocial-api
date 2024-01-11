@@ -35,17 +35,16 @@ Rails.application.routes.draw do
         resources :likes
       end
 
+      post '/shares/:post_id', to: 'shares#create'
+
       post '/follows/:user_id', to: 'follows#create'
 
-      get '/:user_id/followed', to: 'follows#user_followed'
-      get '/:user_id/followers', to: 'follows#user_followers'
+      get '/followed/:user_id', to: 'follows#user_followed'
+      get '/followers/:user_id', to: 'follows#user_followers'
 
       delete '/unfollow/:user_id', to: 'follows#destroy'
 
-      post '/shares/:post_id', to: 'shares#create'
-      get '/user/:id', to: 'users#show_user_posts'
-
-      get '/feed', to: 'users#current_user_posts'
+      get '/profile/:user_id', to: 'users#find_param_user'
     end
 
     # namespace :v2 do

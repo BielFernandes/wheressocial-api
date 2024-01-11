@@ -5,7 +5,7 @@ module Api
       before_action :check_existent, only: [ :destroy ]
 
       def user_followed
-        @followed = Follow.where(followed_id: params[:user_id])
+        @followed = Follow.find_by(followed_id: params[:user_id])
         render json: @followed
       end
 
